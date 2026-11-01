@@ -97,9 +97,25 @@ export const SubscriptionsView: React.FC = () => {
           valueColor="text-[#ecd095]"
         />
       </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {subscriptions.map(sub => (
+      {subscriptions.length === 0 ? (
+        <Card className="p-12 text-center border-dashed border-white/10">
+          <div className="w-12 h-12 rounded-2xl bg-[#caa052]/10 border border-[#caa052]/30 text-[#caa052] flex items-center justify-center mx-auto mb-3">
+            <Repeat className="w-6 h-6" />
+          </div>
+          <div className="text-base font-bold text-white">No active subscriptions tracked</div>
+          <p className="text-xs text-zinc-400 mt-1 max-w-md mx-auto">
+            SaveUp is 100% manual and private — zero bank connections required. Add recurring subscriptions (Netflix, Spotify, Cloud Storage, Gym) to monitor your annualized burn rate.
+          </p>
+          <button
+            onClick={() => setNewSubModalOpen(true)}
+            className="mt-4 gold-pill-btn px-5 py-2 text-xs font-bold cursor-pointer"
+          >
+            + Add First Subscription
+          </button>
+        </Card>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {subscriptions.map(sub => (
           <Card
             key={sub.id}
             className={`p-5 transition space-y-4 ${
@@ -175,6 +191,7 @@ export const SubscriptionsView: React.FC = () => {
           </Card>
         ))}
       </div>
+    )}
 
       {newSubModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in">

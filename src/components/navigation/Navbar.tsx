@@ -26,7 +26,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenSetup,
   onOpenAddTx,
 }) => {
-  const { theme, toggleTheme, calculations, profile, resetToDefaults } = useFinance();
+  const { theme, toggleTheme, calculations, profile, loadSampleData, clearToCleanSlate, isDemoMode } = useFinance();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
 
@@ -160,7 +160,25 @@ export const Navbar: React.FC<NavbarProps> = ({
             {theme === 'dark' ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
           </button>
 
-          {/* Settings / Salary Setup */}
+          {/* Demo Toggle & Setup */}
+          {isDemoMode ? (
+            <button
+              onClick={clearToCleanSlate}
+              className="hidden sm:flex items-center px-2.5 py-1 text-[11px] font-semibold text-rose-300 hover:text-white bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/25 rounded-full transition cursor-pointer"
+              title="Return to clean private slate"
+            >
+              Clear Demo
+            </button>
+          ) : (
+            <button
+              onClick={loadSampleData}
+              className="hidden sm:flex items-center px-2.5 py-1 text-[11px] font-semibold text-[#ecd095] hover:text-white bg-[#caa052]/10 hover:bg-[#caa052]/20 border border-[#caa052]/25 rounded-full transition cursor-pointer"
+              title="Preview with sample data"
+            >
+              Demo Preview
+            </button>
+          )}
+
           <button
             onClick={onOpenSetup}
             className="hidden sm:flex px-3 py-1.5 text-xs text-slate-400 hover:text-white rounded-full hover:bg-white/5 border border-transparent hover:border-white/10 transition cursor-pointer"

@@ -12,13 +12,14 @@ import {
   FinancialHealthScore
 } from '../types';
 import { 
-  initialProfile, 
+  defaultCleanProfile,
   initialCategories, 
-  initialTransactions, 
-  initialSubscriptions, 
-  initialSavingsGoals, 
-  initialChallenges, 
-  initialInsights 
+  sampleDemoProfile,
+  sampleDemoTransactions, 
+  sampleDemoSubscriptions, 
+  sampleDemoSavingsGoals, 
+  sampleDemoChallenges, 
+  sampleDemoInsights 
 } from '../data/mockData';
 import { 
   calculateDailyAllowance, 
@@ -59,15 +60,18 @@ interface FinanceContextType {
   deleteSubscription: (id: string) => void;
   // Simulator action
   runSimulation: (itemName: string, cost: number) => SimulationResult;
-  // State reset for demo
+  // State management & demo
   resetToDefaults: () => void;
+  loadSampleData: () => void;
+  clearToCleanSlate: () => void;
+  isDemoMode: boolean;
 }
 
 const FinanceContext = createContext<FinanceContextType | undefined>(undefined);
 
 export const FinanceProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [profile, setProfileState] = useState<FinancialProfile>(() => 
-    storageService.get('profile', initialProfile)
+    storageService.get('profile', defaultCleanProfile)
   );
 
   const [categories, setCategories] = useState<Category[]>(() => 
@@ -75,23 +79,23 @@ export const FinanceProvider: React.FC<{ children: ReactNode }> = ({ children })
   );
 
   const [transactions, setTransactions] = useState<Transaction[]>(() => 
-    storageService.get('transactions', initialTransactions)
+    storageService.get('transactions', [])
   );
 
   const [subscriptions, setSubscriptions] = useState<Subscription[]>(() => 
-    storageService.get('subscriptions', initialSubscriptions)
+    storageService.get('subscriptions', [])
   );
 
   const [savingsGoals, setSavingsGoals] = useState<SavingsGoal[]>(() => 
-    storageService.get('savingsGoals', initialSavingsGoals)
+    storageService.get('savingsGoals', [])
   );
 
   const [challenges, setChallenges] = useState<SpendingChallenge[]>(() => 
-    storageService.get('challenges', initialChallenges)
+    storageService.get('challenges', [])
   );
 
   const [insights, setInsights] = useState<FinancialInsight[]>(() => 
-    storageService.get('insights', initialInsights)
+    storageService.get('insights', [])
   );
 
   const [theme, setTheme] = useState<'dark' | 'light'>(() => 
@@ -261,15 +265,31 @@ export const FinanceProvider: React.FC<{ children: ReactNode }> = ({ children })
     return simulatePurchase(itemName, cost, calculations, profile);
   };
 
-  const resetToDefaults = () => {
-    setProfileState(initialProfile);
-    setCategories(initialCategories);
-    setTransactions(initialTransactions);
-    setSubscriptions(initialSubscriptions);
-    setSavingsGoals(initialSavingsGoals);
-    setChallenges(initialChallenges);
-    setInsights(initialInsights);
+  const isDemoMode = useMemo(() => {
+    return Boolean(profile.isSetupCompleted && transactions.length > 3 && profile.monthlyInHandSalary === 120000);
+  }, [profile, transactions]);
+
+  const loadSampleData = () => {
+    setProfileState(sampleDemoProfile);
+    setTransactions(sampleDemoTransactions);
+    setSubscriptions(sampleDemoSubscriptions);
+    setSavingsGoals(sampleDemoSavingsGoals);
+    setChallenges(sampleDemoChallenges);
+    setInsights(sampleDemoInsights);
+  };
+
+  const clearToCleanSlate = () => {
+    setProfileState(defaultCleanProfile);
+    setTransactions([]);
+    setSubscriptions([]);
+    setSavingsGoals([]);
+    setChallenges([]);
+    setInsights([]);
     storageService.clearAll();
+  };
+
+  const resetToDefaults = () => {
+    clearToCleanSlate();
   };
 
   return (
@@ -302,6 +322,9 @@ export const FinanceProvider: React.FC<{ children: ReactNode }> = ({ children })
         deleteSubscription,
         runSimulation,
         resetToDefaults,
+        loadSampleData,
+        clearToCleanSlate,
+        isDemoMode,
       }}
     >
       {children}

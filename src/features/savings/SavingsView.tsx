@@ -169,8 +169,25 @@ export const SavingsView: React.FC = () => {
           <span className="text-xs text-slate-400">Click deposit to add savings directly</span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {savingsGoals.map(goal => {
+        {savingsGoals.length === 0 ? (
+          <Card className="p-12 text-center border-dashed border-white/10">
+            <div className="w-12 h-12 rounded-2xl bg-[#caa052]/10 border border-[#caa052]/30 text-[#caa052] flex items-center justify-center mx-auto mb-3">
+              <PiggyBank className="w-6 h-6" />
+            </div>
+            <div className="text-base font-bold text-white">No savings goals created yet</div>
+            <p className="text-xs text-zinc-400 mt-1 max-w-md mx-auto">
+              SaveUp separates your savings from your daily spend. Create a goal (e.g. Travel, Emergency Buffer, Gadget) to track your progress.
+            </p>
+            <button
+              onClick={() => setNewGoalModalOpen(true)}
+              className="mt-4 gold-pill-btn px-5 py-2 text-xs font-bold cursor-pointer"
+            >
+              + Create First Savings Goal
+            </button>
+          </Card>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {savingsGoals.map(goal => {
             const percent = Math.min(100, Math.round((goal.currentAmount / goal.targetAmount) * 100));
             const remaining = Math.max(0, goal.targetAmount - goal.currentAmount);
 
@@ -228,9 +245,10 @@ export const SavingsView: React.FC = () => {
                   </button>
                 </div>
               </Card>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {activeGoalModal && (

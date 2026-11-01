@@ -93,6 +93,7 @@ export interface FinancialProfile {
   currentSavings: number;
   emergencyFundMonthsTarget: number;
   carryForwardDailySavings: boolean;
+  isSetupCompleted?: boolean;
 }
 
 export interface DailyAllowanceCalculation {

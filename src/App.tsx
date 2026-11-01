@@ -13,11 +13,13 @@ import { AnalyticsView } from './features/analytics/AnalyticsView';
 import { HealthInsightsView } from './features/insights/HealthInsightsView';
 import { AddTransactionModal } from './components/modals/AddTransactionModal';
 import { SetupModal } from './features/setup/SetupModal';
+import { useFinance } from './hooks/useFinance';
 
 const MainApp: React.FC = () => {
+  const { profile } = useFinance();
   const [activeTab, setActiveTab] = useState<ActiveTab>('dashboard');
   const [addTxModalOpen, setAddTxModalOpen] = useState(false);
-  const [setupModalOpen, setSetupModalOpen] = useState(false);
+  const [setupModalOpen, setSetupModalOpen] = useState(!profile.isSetupCompleted);
   const [prefilledDate, setPrefilledDate] = useState<string | undefined>(undefined);
 
   const handleOpenAddTxWithDate = (date: string) => {

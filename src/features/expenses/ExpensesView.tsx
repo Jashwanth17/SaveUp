@@ -5,7 +5,8 @@ import {
   Plus, 
   Trash2, 
   Edit3, 
-  Download 
+  Download,
+  ReceiptText 
 } from 'lucide-react';
 import { useFinance } from '../../hooks/useFinance';
 import { formatINR, formatDate } from '../../utils/formatters';
@@ -264,8 +265,20 @@ export const ExpensesView: React.FC<ExpensesViewProps> = ({ onOpenAddTx }) => {
             <tbody className="divide-y divide-white/5">
               {filteredTransactions.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="py-12 text-center text-slate-500">
-                    No transactions match your search and filter criteria.
+                  <td colSpan={7} className="py-14 text-center">
+                    <div className="w-12 h-12 rounded-2xl bg-[#caa052]/10 border border-[#caa052]/30 text-[#caa052] flex items-center justify-center mx-auto mb-3">
+                      <ReceiptText className="w-6 h-6" />
+                    </div>
+                    <div className="text-sm font-bold text-white">No transactions recorded yet</div>
+                    <p className="text-xs text-zinc-400 mt-1 max-w-md mx-auto">
+                      SaveUp is 100% manual and private — zero bank connections required. Tap "+ Add Transaction" to record your first daily expense or salary inflow.
+                    </p>
+                    <button
+                      onClick={onOpenAddTx}
+                      className="mt-4 gold-pill-btn px-4 py-2 text-xs font-bold cursor-pointer"
+                    >
+                      + Add First Transaction
+                    </button>
                   </td>
                 </tr>
               ) : (

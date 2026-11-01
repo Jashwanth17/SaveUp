@@ -104,6 +104,23 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               </div>
             </div>
 
+            {profile.monthlyInHandSalary === 0 && (
+              <div className="p-4 bg-[#caa052]/10 border border-[#caa052]/30 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-in fade-in">
+                <div>
+                  <div className="font-bold text-[#ecd095] text-sm">Welcome to SaveUp — Set Up Your Salary Cycle</div>
+                  <p className="text-xs text-zinc-300 mt-0.5">
+                    100% private & manual. Enter your monthly in-hand salary to calculate your safe daily limit.
+                  </p>
+                </div>
+                <button
+                  onClick={onOpenSetup}
+                  className="gold-pill-btn px-4 py-2 text-xs font-extrabold shrink-0 cursor-pointer"
+                >
+                  Configure Setup →
+                </button>
+              </div>
+            )}
+
             {/* Allowance Big Display in Champagne Gold */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-center">
               <div>
@@ -298,40 +315,52 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
 
           <div className="space-y-3">
-            {profile.fixedExpenses.slice(0, 4).map(bill => (
-              <div
-                key={bill.id}
-                className="p-3 bg-black/60 rounded-xl border border-white/5 flex items-center justify-between text-xs"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-black border border-white/10 text-slate-300">
-                    <CategoryIcon category={bill.category} className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <div className="font-bold text-white">{bill.name}</div>
-                    <div className="text-slate-400 text-[11px]">
-                      Due on {bill.dueDay}th of month {bill.autoDebit ? '• Auto-Debit' : ''}
+            {profile.fixedExpenses.length === 0 ? (
+              <div className="py-8 text-center text-xs text-zinc-400">
+                <p>No mandatory fixed commitments added yet.</p>
+                <button
+                  onClick={onOpenSetup}
+                  className="mt-2 text-xs font-semibold text-[#ecd095] hover:underline cursor-pointer"
+                >
+                  + Add Rent, EMI, or Bills
+                </button>
+              </div>
+            ) : (
+              profile.fixedExpenses.slice(0, 4).map(bill => (
+                <div
+                  key={bill.id}
+                  className="p-3 bg-black/60 rounded-xl border border-white/5 flex items-center justify-between text-xs"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-black border border-white/10 text-slate-300">
+                      <CategoryIcon category={bill.category} className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <div className="font-bold text-white">{bill.name}</div>
+                      <div className="text-slate-400 text-[11px]">
+                        Due on {bill.dueDay}th of month {bill.autoDebit ? '• Auto-Debit' : ''}
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="flex items-center gap-3">
-                  <span className="font-bold text-rose-400 text-sm">
-                    -{formatINR(bill.amount)}
-                  </span>
-                  <button
-                    onClick={() => toggleFixedExpensePaid(bill.id)}
-                    className={`px-2.5 py-1 rounded-lg text-xs font-semibold border transition cursor-pointer ${
-                      bill.isPaid
-                        ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
-                        : 'bg-black/60 hover:bg-black text-slate-300 border-white/10'
-                    }`}
-                  >
-                    {bill.isPaid ? 'Paid' : 'Mark Paid'}
-                  </button>
+                  <div className="flex items-center gap-3">
+                    <span className="font-bold text-rose-400 text-sm">
+                      -{formatINR(bill.amount)}
+                    </span>
+                    <button
+                      onClick={() => toggleFixedExpensePaid(bill.id)}
+                      className={`px-2.5 py-1 rounded-lg text-xs font-semibold border transition cursor-pointer ${
+                        bill.isPaid
+                          ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
+                          : 'bg-black/60 hover:bg-black text-slate-300 border-white/10'
+                      }`}
+                    >
+                      {bill.isPaid ? 'Paid' : 'Mark Paid'}
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </Card>
 
@@ -351,23 +380,30 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
 
           <div className="space-y-3.5">
-            {categorySpending.slice(0, 4).map(cat => (
-              <div key={cat.id} className="space-y-1.5">
-                <div className="flex items-center justify-between text-xs">
-                  <div className="flex items-center gap-2">
-                    <CategoryIcon category={cat.name} className="w-3.5 h-3.5 text-slate-400" />
-                    <span className="font-semibold text-slate-200">{cat.name}</span>
-                  </div>
-                  <div className="text-right">
-                    <span className="font-bold text-rose-400">-{formatINR(cat.spent)}</span>
-                    {cat.budgetLimit && (
-                      <span className="text-slate-500 ml-1">/ {formatINR(cat.budgetLimit)}</span>
-                    )}
-                  </div>
-                </div>
-                <ProgressBar percent={cat.percent} />
+            {categorySpending.every(cat => cat.spent === 0) ? (
+              <div className="py-8 text-center text-xs text-zinc-400">
+                <p>No expenses logged in this cycle yet.</p>
+                <p className="text-[11px] text-zinc-500 mt-0.5">All category allowances are 100% available.</p>
               </div>
-            ))}
+            ) : (
+              categorySpending.slice(0, 4).map(cat => (
+                <div key={cat.id} className="space-y-1.5">
+                  <div className="flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-2">
+                      <CategoryIcon category={cat.name} className="w-3.5 h-3.5 text-slate-400" />
+                      <span className="font-semibold text-slate-200">{cat.name}</span>
+                    </div>
+                    <div className="text-right">
+                      <span className="font-bold text-rose-400">-{formatINR(cat.spent)}</span>
+                      {cat.budgetLimit && (
+                        <span className="text-slate-500 ml-1">/ {formatINR(cat.budgetLimit)}</span>
+                      )}
+                    </div>
+                  </div>
+                  <ProgressBar percent={cat.percent} />
+                </div>
+              ))
+            )}
           </div>
         </Card>
       </div>
@@ -401,47 +437,67 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
-              {recentTransactions.map(tx => (
-                <tr key={tx.id} className="hover:bg-white/5 transition">
-                  <td className="py-3 pl-1">
-                    <div className="font-bold text-white">{tx.description}</div>
-                    {tx.isShared && (
-                      <span className="inline-flex items-center gap-1 text-[10px] text-amber-400 font-semibold mt-0.5">
-                        <Users className="w-3 h-3" /> Split with friends
-                      </span>
-                    )}
-                  </td>
-                  <td className="py-3">
-                    <span className="px-2 py-0.5 rounded-md bg-black/60 text-slate-300 border border-white/5 text-[11px]">
-                      {tx.category}
-                    </span>
-                  </td>
-                  <td className="py-3 text-slate-400">{formatDate(tx.date)}</td>
-                  <td className="py-3 text-slate-400">{tx.paymentMethod}</td>
-                  <td className="py-3 text-right">
-                    <span
-                      className={`font-black text-sm ${
-                        tx.type === 'income' ? 'text-emerald-400' : 'text-rose-400'
-                      }`}
+              {recentTransactions.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="py-12 text-center">
+                    <div className="w-12 h-12 rounded-2xl bg-[#caa052]/10 border border-[#caa052]/30 text-[#caa052] flex items-center justify-center mx-auto mb-3">
+                      <Receipt className="w-6 h-6" />
+                    </div>
+                    <div className="text-sm font-bold text-white">No transactions recorded yet</div>
+                    <p className="text-xs text-zinc-400 mt-1 max-w-md mx-auto">
+                      SaveUp is completely private and does not connect to external banks. Record your first daily expense or salary inflow manually.
+                    </p>
+                    <button
+                      onClick={onOpenAddTx}
+                      className="mt-4 gold-pill-btn px-4 py-2 text-xs font-bold cursor-pointer"
                     >
-                      {tx.type === 'income' ? '+' : '-'}{formatINR(tx.amount)}
-                    </span>
-                  </td>
-                  <td className="py-3 text-center">
-                    {tx.receiptUrl ? (
-                      <button
-                        onClick={() => setSelectedReceiptTx(tx)}
-                        className="p-1 rounded-md bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 transition cursor-pointer"
-                        title="View Receipt"
-                      >
-                        <Receipt className="w-4 h-4" />
-                      </button>
-                    ) : (
-                      <span className="text-slate-600">—</span>
-                    )}
+                      + Record First Transaction
+                    </button>
                   </td>
                 </tr>
-              ))}
+              ) : (
+                recentTransactions.map(tx => (
+                  <tr key={tx.id} className="hover:bg-white/5 transition">
+                    <td className="py-3 pl-1">
+                      <div className="font-bold text-white">{tx.description}</div>
+                      {tx.isShared && (
+                        <span className="inline-flex items-center gap-1 text-[10px] text-amber-400 font-semibold mt-0.5">
+                          <Users className="w-3 h-3" /> Split with friends
+                        </span>
+                      )}
+                    </td>
+                    <td className="py-3">
+                      <span className="px-2 py-0.5 rounded-md bg-black/60 text-slate-300 border border-white/5 text-[11px]">
+                        {tx.category}
+                      </span>
+                    </td>
+                    <td className="py-3 text-slate-400">{formatDate(tx.date)}</td>
+                    <td className="py-3 text-slate-400">{tx.paymentMethod}</td>
+                    <td className="py-3 text-right">
+                      <span
+                        className={`font-black text-sm ${
+                          tx.type === 'income' ? 'text-emerald-400' : 'text-rose-400'
+                        }`}
+                      >
+                        {tx.type === 'income' ? '+' : '-'}{formatINR(tx.amount)}
+                      </span>
+                    </td>
+                    <td className="py-3 text-center">
+                      {tx.receiptUrl ? (
+                        <button
+                          onClick={() => setSelectedReceiptTx(tx)}
+                          className="p-1 rounded-md bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 transition cursor-pointer"
+                          title="View Receipt"
+                        >
+                          <Receipt className="w-4 h-4" />
+                        </button>
+                      ) : (
+                        <span className="text-slate-600">—</span>
+                      )}
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

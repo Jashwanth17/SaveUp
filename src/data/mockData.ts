@@ -26,7 +26,20 @@ export const initialCategories: Category[] = [
   { id: 'cat-15', name: 'Other', icon: 'MoreHorizontal', color: '#64748b', budgetLimit: 5000 },
 ];
 
-export const initialProfile: FinancialProfile = {
+export const defaultCleanProfile: FinancialProfile = {
+  monthlyInHandSalary: 0,
+  annualCtc: 0,
+  salaryCreditDate: 1, // 1st of every month
+  additionalIncome: 0,
+  fixedExpenses: [],
+  monthlySavingsTarget: 0,
+  currentSavings: 0,
+  emergencyFundMonthsTarget: 6,
+  carryForwardDailySavings: true,
+  isSetupCompleted: false,
+};
+
+export const sampleDemoProfile: FinancialProfile = {
   monthlyInHandSalary: 120000,
   annualCtc: 1800000,
   salaryCreditDate: 1, // 1st of every month
@@ -44,7 +57,10 @@ export const initialProfile: FinancialProfile = {
   currentSavings: 480000,
   emergencyFundMonthsTarget: 6,
   carryForwardDailySavings: true,
+  isSetupCompleted: true,
 };
+
+export const initialProfile = defaultCleanProfile;
 
 // Generate relative dates based on current year & month
 const now = new Date();
@@ -282,3 +298,9 @@ export const initialChallenges: SpendingChallenge[] = [
     category: 'Shopping',
   },
 ];
+
+export const sampleDemoTransactions = initialTransactions;
+export const sampleDemoSubscriptions = initialSubscriptions;
+export const sampleDemoSavingsGoals = initialSavingsGoals;
+export const sampleDemoInsights = initialInsights;
+export const sampleDemoChallenges = initialChallenges;
