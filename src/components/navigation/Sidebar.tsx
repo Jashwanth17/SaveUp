@@ -64,7 +64,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <div>
               <div className="text-base font-extrabold text-white tracking-tight flex items-center gap-1.5 leading-none">
                 <span>SaveUp</span>
-                <span className="text-[10px] text-[#caa052] font-semibold">™</span>
               </div>
               <p className="text-[8px] font-bold text-zinc-500 tracking-widest uppercase mt-0.5">
                 Every Rupee, Calculated.

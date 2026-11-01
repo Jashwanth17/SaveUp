@@ -18,6 +18,7 @@ interface NavbarProps {
   setActiveTab: (tab: ActiveTab) => void;
   onOpenSetup: () => void;
   onOpenAddTx: () => void;
+  onSignOut?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -25,6 +26,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   setActiveTab,
   onOpenSetup,
   onOpenAddTx,
+  onSignOut,
 }) => {
   const { theme, toggleTheme, calculations, profile, loadSampleData, clearToCleanSlate, isDemoMode } = useFinance();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -72,7 +74,6 @@ export const Navbar: React.FC<NavbarProps> = ({
             <div>
               <div className="text-base font-extrabold text-white tracking-tight flex items-center gap-1.5 leading-none">
                 <span>SaveUp</span>
-                <span className="text-[10px] text-[#caa052] font-semibold">™</span>
               </div>
               <p className="text-[8px] font-bold text-slate-500 tracking-widest uppercase mt-0.5">
                 Every Rupee, Calculated.
@@ -186,6 +187,16 @@ export const Navbar: React.FC<NavbarProps> = ({
             Setup
           </button>
 
+          {onSignOut && (
+            <button
+              onClick={onSignOut}
+              className="hidden sm:flex px-2.5 py-1.5 text-xs text-zinc-400 hover:text-white rounded-full hover:bg-white/5 transition cursor-pointer"
+              title="Return to Welcome Screen"
+            >
+              Exit
+            </button>
+          )}
+
           {/* Champagne Gold Pill Button (Matches "Let's Talk →") */}
           <button
             onClick={onOpenAddTx}
@@ -225,6 +236,17 @@ export const Navbar: React.FC<NavbarProps> = ({
           >
             ⚙️ Salary & Financial Setup
           </button>
+          {onSignOut && (
+            <button
+              onClick={() => {
+                onSignOut();
+                setMobileMenuOpen(false);
+              }}
+              className="col-span-2 p-2.5 rounded-xl text-xs font-medium text-left bg-white/5 text-zinc-400 hover:text-white border border-white/5"
+            >
+              🚪 Exit to Welcome Screen
+            </button>
+          )}
         </div>
       )}
     </div>
