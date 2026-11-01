@@ -1,0 +1,167 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+    --gold-primary: #caa052;
+    --gold-light: #f5d78e;
+    --gold-hover: #e0aa3e;
+    --gold-dark: #996f26;
+    --bg-black: #050507;
+    --surface-card: #0c0d13;
+    --surface-card-hover: #12141d;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scrollbar-color: rgba(202, 160, 82, 0.35) #050507;
+    scrollbar-width: thin;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+    background-color: #050507;
+    color: #f3f4f6;
+    letter-spacing: -0.015em;
+  }
+}
+
+/* Custom Minimalist Global Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #050507;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(202, 160, 82, 0.35) 0%, rgba(170, 119, 34, 0.35) 100%);
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, rgba(243, 207, 138, 0.6) 0%, rgba(202, 160, 82, 0.6) 100%);
+  box-shadow: 0 0 8px rgba(202, 160, 82, 0.5);
+}
+
+/* Custom Gold Scrollbar for Dropdowns and Modals */
+.custom-gold-scrollbar {
+  scrollbar-color: rgba(202, 160, 82, 0.4) rgba(0, 0, 0, 0.3);
+  scrollbar-width: thin;
+}
+
+.custom-gold-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+.custom-gold-scrollbar::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 9999px;
+}
+
+.custom-gold-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #caa052 0%, #aa7722 100%);
+  border-radius: 9999px;
+}
+
+.custom-gold-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #f3cf8a;
+}
+
+/* Bespoke Champagne Gold Pill Button (Exact Playerhub "Let's Talk →" match) */
+.gold-pill-btn,
+.gold-button-gradient {
+  background: linear-gradient(135deg, #f3cf8a 0%, #caa052 50%, #aa7722 100%);
+  color: #080603;
+  font-weight: 700;
+  border-radius: 9999px;
+  box-shadow: 0 4px 20px -2px rgba(202, 160, 82, 0.35);
+  border: 1px solid rgba(255, 235, 185, 0.3);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gold-pill-btn:hover,
+.gold-button-gradient:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 26px -2px rgba(202, 160, 82, 0.45);
+}
+
+.gold-pill-btn:active,
+.gold-button-gradient:active {
+  transform: translateY(0);
+}
+
+/* Luxury Dark Outline Button */
+.gold-outline-btn {
+  background: rgba(12, 13, 19, 0.8);
+  color: #ecd095;
+  font-weight: 600;
+  border: 1px solid rgba(202, 160, 82, 0.35);
+  border-radius: 9999px;
+  transition: all 0.2s ease;
+}
+
+.gold-outline-btn:hover {
+  background: rgba(202, 160, 82, 0.12);
+  border-color: rgba(202, 160, 82, 0.6);
+  color: #ffffff;
+}
+
+/* Subtle Secondary Dark Pill */
+.dark-pill-btn {
+  background: rgba(255, 255, 255, 0.04);
+  color: #d1d5db;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 9999px;
+  transition: all 0.2s ease;
+}
+
+.dark-pill-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  border-color: rgba(202, 160, 82, 0.3);
+}
+
+/* Floating Pill Header - Pure Obsidian Black with Frosted Glass */
+.floating-pill-header {
+  background: rgba(6, 6, 9, 0.88);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Bespoke Fintech Obsidian Surface with Hairline Gold Rim */
+.fintech-card {
+  background: #0c0d13;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 1.25rem;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.fintech-card:hover {
+  border-color: rgba(202, 160, 82, 0.25);
+  box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.9), 0 0 20px -4px rgba(202, 160, 82, 0.08);
+}
+
+/* Metallic Champagne Gold Text */
+.gold-text {
+  color: #caa052;
+}
+
+.gold-text-gradient {
+  background: linear-gradient(135deg, #fdf1d6 0%, #caa052 60%, #996f26 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
