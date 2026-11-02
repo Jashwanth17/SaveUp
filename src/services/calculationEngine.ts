@@ -11,6 +11,19 @@ import {
  * pre-purchase simulations, and financial health scores.
  */
 
+export function getLastWorkingDayOfMonth(year: number, monthIndex: number): number {
+  const lastDayDate = new Date(year, monthIndex + 1, 0);
+  let dayOfWeek = lastDayDate.getDay(); // 0 = Sun, 6 = Sat
+  let date = lastDayDate.getDate();
+
+  if (dayOfWeek === 0) {
+    date -= 2; // Sunday -> Friday
+  } else if (dayOfWeek === 6) {
+    date -= 1; // Saturday -> Friday
+  }
+  return date;
+}
+
 export const calculateDailyAllowance = (
   profile: FinancialProfile,
   transactions: Transaction[]
@@ -19,20 +32,35 @@ export const calculateDailyAllowance = (
   const currentYear = now.getFullYear();
   const currentMonth = now.getMonth();
   const todayDate = now.getDate();
-  const salaryCreditDay = profile.salaryCreditDate || 1;
 
   let cycleStart: Date;
   let cycleEnd: Date;
 
-  if (todayDate >= salaryCreditDay) {
-    cycleStart = new Date(currentYear, currentMonth, salaryCreditDay);
-    cycleEnd = new Date(currentYear, currentMonth + 1, salaryCreditDay - 1);
-    if (salaryCreditDay === 1) {
-      cycleEnd = new Date(currentYear, currentMonth + 1, 0);
+  if (profile.isLastWorkingDay) {
+    const curLWD = getLastWorkingDayOfMonth(currentYear, currentMonth);
+    const prevLWD = getLastWorkingDayOfMonth(currentYear, currentMonth - 1);
+    const nextLWD = getLastWorkingDayOfMonth(currentYear, currentMonth + 1);
+
+    if (todayDate >= curLWD) {
+      cycleStart = new Date(currentYear, currentMonth, curLWD);
+      cycleEnd = new Date(currentYear, currentMonth + 1, nextLWD - 1);
+    } else {
+      cycleStart = new Date(currentYear, currentMonth - 1, prevLWD);
+      cycleEnd = new Date(currentYear, currentMonth, curLWD - 1);
     }
   } else {
-    cycleStart = new Date(currentYear, currentMonth - 1, salaryCreditDay);
-    cycleEnd = new Date(currentYear, currentMonth, salaryCreditDay - 1);
+    const salaryCreditDay = profile.salaryCreditDate || 1;
+
+    if (todayDate >= salaryCreditDay) {
+      cycleStart = new Date(currentYear, currentMonth, salaryCreditDay);
+      cycleEnd = new Date(currentYear, currentMonth + 1, salaryCreditDay - 1);
+      if (salaryCreditDay === 1) {
+        cycleEnd = new Date(currentYear, currentMonth + 1, 0);
+      }
+    } else {
+      cycleStart = new Date(currentYear, currentMonth - 1, salaryCreditDay);
+      cycleEnd = new Date(currentYear, currentMonth, salaryCreditDay - 1);
+    }
   }
 
   const msPerDay = 1000 * 60 * 60 * 24;

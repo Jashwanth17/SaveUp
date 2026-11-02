@@ -17,9 +17,10 @@ import { WelcomeScreen } from './features/welcome/WelcomeScreen';
 import { SignUpView } from './features/auth/SignUpView';
 import { LoginView } from './features/auth/LoginView';
 import { ForgotPasswordView } from './features/auth/ForgotPasswordView';
+import { OnboardingView } from './features/onboarding/OnboardingView';
 import { useFinance } from './hooks/useFinance';
 
-type AppScreen = 'welcome' | 'signup' | 'login' | 'forgot' | 'app';
+type AppScreen = 'welcome' | 'signup' | 'login' | 'forgot' | 'onboarding' | 'app';
 
 const MainApp: React.FC = () => {
   const { profile } = useFinance();
@@ -72,16 +73,17 @@ const MainApp: React.FC = () => {
         onNavigateToForgot={() => setCurrentScreen('forgot')}
         onNavigateToWelcome={() => setCurrentScreen('welcome')}
         onLoginSuccess={() => {
-          setCurrentScreen('app');
           if (!profile.isSetupCompleted) {
-            setSetupModalOpen(true);
+            setCurrentScreen('onboarding');
+          } else {
+            setCurrentScreen('app');
           }
         }}
       />
     );
   }
 
-  // Screen 4 – Forgot Password (with Recovery PIN)
+  // Forgot Password (with Recovery PIN)
   if (currentScreen === 'forgot') {
     return (
       <ForgotPasswordView
@@ -90,6 +92,15 @@ const MainApp: React.FC = () => {
           setCurrentScreen('login');
         }}
         onNavigateToWelcome={() => setCurrentScreen('welcome')}
+      />
+    );
+  }
+
+  // Unified Single Onboarding Screen (Big Box with Scrollable Content)
+  if (currentScreen === 'onboarding') {
+    return (
+      <OnboardingView
+        onComplete={() => setCurrentScreen('app')}
       />
     );
   }

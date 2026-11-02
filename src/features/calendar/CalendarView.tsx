@@ -13,6 +13,7 @@ import {
 import { useFinance } from '../../hooks/useFinance';
 import { formatINR, formatDate } from '../../utils/formatters';
 import { Transaction, CategoryType } from '../../types';
+import { getLastWorkingDayOfMonth } from '../../services/calculationEngine';
 import { CategoryIcon } from '../../components/common/CategoryIcon';
 import { ReceiptModal } from '../../components/modals/ReceiptModal';
 import { Card, Badge, CustomSelect } from '../../components/ui';
@@ -72,9 +73,13 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ onOpenAddTxWithDate 
       isSalaryDate: boolean;
     }>();
 
+    const targetSalaryDay = profile.isLastWorkingDay
+      ? getLastWorkingDayOfMonth(year, month)
+      : profile.salaryCreditDate;
+
     for (let day = 1; day <= daysInMonth; day++) {
       const dateKey = `${year}-${pad(month + 1)}-${pad(day)}`;
-      const isSalaryDate = day === profile.salaryCreditDate;
+      const isSalaryDate = day === targetSalaryDay;
       map.set(dateKey, {
         incomeTotal: 0,
         expenseTotal: 0,

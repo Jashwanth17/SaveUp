@@ -19,6 +19,7 @@ export const SetupModal: React.FC<SetupModalProps> = ({ isOpen, onClose }) => {
   const [salary, setSalary] = useState<number>(profile.monthlyInHandSalary || 0);
   const [ctc, setCtc] = useState<number>(profile.annualCtc || 0);
   const [salaryDate, setSalaryDate] = useState<number>(profile.salaryCreditDate || 1);
+  const [isLastWorkingDay, setIsLastWorkingDay] = useState<boolean>(profile.isLastWorkingDay || false);
   const [otherIncome, setOtherIncome] = useState<number>(profile.additionalIncome || 0);
 
   // Step 2: Fixed Commitments
@@ -76,6 +77,7 @@ export const SetupModal: React.FC<SetupModalProps> = ({ isOpen, onClose }) => {
       monthlyInHandSalary: salary,
       annualCtc: ctc > 0 ? ctc : undefined,
       salaryCreditDate: salaryDate,
+      isLastWorkingDay,
       additionalIncome: otherIncome,
       fixedExpenses,
       monthlySavingsTarget: savingsTarget,
@@ -221,14 +223,26 @@ export const SetupModal: React.FC<SetupModalProps> = ({ isOpen, onClose }) => {
                     Salary Credit Date (Day of Month) *
                   </label>
                   <CustomSelect
-                    value={salaryDate}
-                    onChange={val => setSalaryDate(Number(val) || 1)}
-                    options={Array.from({ length: 31 }, (_, i) => i + 1).map(day => ({
-                      value: day,
-                      label: `${day}${day === 1 ? 'st' : day === 2 ? 'nd' : day === 3 ? 'rd' : 'th'} of month ${day === 1 ? '(1st of month)' : day === 25 ? '(25th Corporate)' : ''}`
-                    }))}
+                    value={isLastWorkingDay ? 'last-working-day' : salaryDate}
+                    onChange={val => {
+                      if (val === 'last-working-day') {
+                        setIsLastWorkingDay(true);
+                      } else {
+                        setIsLastWorkingDay(false);
+                        setSalaryDate(Number(val) || 1);
+                      }
+                    }}
+                    options={[
+                      { value: 'last-working-day', label: '💼 Month\'s Last Working Day' },
+                      ...Array.from({ length: 31 }, (_, i) => i + 1).map(day => ({
+                        value: day,
+                        label: `${day}${day === 1 ? 'st' : day === 2 ? 'nd' : day === 3 ? 'rd' : 'th'} of month ${day === 1 ? '(1st of month)' : ''}`
+                      }))
+                    ]}
                   />
-                  <p className="text-[11px] text-zinc-500 mt-1">Your 30-day budget cycle starts on this day.</p>
+                  <p className="text-[11px] text-zinc-500 mt-1">
+                    {isLastWorkingDay ? 'Credits on Friday if month ends on weekend.' : 'Your 30-day budget cycle starts on this day.'}
+                  </p>
                 </div>
 
                 <div>

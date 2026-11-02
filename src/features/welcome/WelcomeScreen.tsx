@@ -146,7 +146,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
       {/* Footer (Fixed at Bottom, Compact) */}
       <footer className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 border-t border-white/[0.06] text-center text-xs text-zinc-500 relative z-20 flex flex-col sm:flex-row items-center justify-between gap-1 flex-shrink-0">
         <div>
-          © {new Date().getFullYear()} SaveUp. Every Rupee, Calculated.
+          © SaveUp. Every Rupee, Calculated. All rights reserved.
         </div>
         <div className="flex items-center gap-3 text-zinc-400">
           <span>Private Ledger</span>

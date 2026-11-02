@@ -228,7 +228,7 @@ export const LoginView: React.FC<LoginViewProps> = ({
 
       {/* Footer */}
       <footer className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-3 border-t border-white/[0.06] text-center text-xs text-zinc-500 relative z-20 flex-shrink-0">
-        © {new Date().getFullYear()} SaveUp. Personal Finance Ledger.
+        © SaveUp • Smart Personal Finance Ledger. All rights reserved.
       </footer>
 
     </div>

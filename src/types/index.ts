@@ -95,6 +95,15 @@ export interface FinancialProfile {
   carryForwardDailySavings: boolean;
   isSetupCompleted?: boolean;
   userName?: string;
+  name?: string;
+  country?: string;
+  currency?: string;
+  currencySymbol?: string;
+  preferredFinancialMonth?: 'calendar' | 'salary-cycle';
+  salaryFrequency?: 'monthly' | 'bi-weekly' | 'weekly' | 'daily';
+  salaryCreditWeekday?: number; // 1 = Monday ... 7 = Sunday
+  isLastWorkingDay?: boolean; // Salary credited on last working day (Fri if weekend)
+  additionalIncomeSources?: { id: string; name: string; amount: number }[];
   dob?: string;
 }
 

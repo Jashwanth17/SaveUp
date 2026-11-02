@@ -259,7 +259,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           <div className="p-3 bg-black/40 rounded-xl border border-white/5 text-xs flex items-center justify-between">
             <span className="text-slate-400">Next Salary Credit:</span>
             <span className="font-bold text-amber-300">
-              {profile.salaryCreditDate}th of next month ({calculations.daysRemaining} days)
+              {profile.isLastWorkingDay
+                ? `Month's Last Working Day (${calculations.daysRemaining} days left)`
+                : `${profile.salaryCreditDate}th of next month (${calculations.daysRemaining} days)`}
             </span>
           </div>
         </Card>
