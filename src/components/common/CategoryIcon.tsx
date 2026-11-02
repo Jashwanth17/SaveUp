@@ -18,7 +18,8 @@ export const CategoryIcon: React.FC<CategoryIconProps> = ({
   let name = iconName;
   if (!name && category) {
     const c = category.toLowerCase();
-    if (c.includes('food') || c.includes('grocer')) name = 'ShoppingBag';
+    if (c.includes('tea') || c.includes('coffee') || c.includes('snack') || c.includes('chai')) name = 'Coffee';
+    else if (c.includes('food') || c.includes('grocer')) name = 'ShoppingBag';
     else if (c.includes('dine') || c.includes('cafe') || c.includes('restaurant')) name = 'Utensils';
     else if (c.includes('rent') || c.includes('house')) name = 'Home';
     else if (c.includes('car') || c.includes('transport') || c.includes('fuel')) name = 'Car';

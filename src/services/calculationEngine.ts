@@ -74,10 +74,14 @@ export const calculateDailyAllowance = (
   const endStr = `${cycleEnd.getFullYear()}-${pad(cycleEnd.getMonth() + 1)}-${pad(cycleEnd.getDate())}`;
   const todayStr = `${currentYear}-${pad(currentMonth + 1)}-${pad(todayDate)}`;
 
+  const cycleIncomeTxs = transactions
+    .filter(tx => tx.type === 'income' && tx.date >= startStr && tx.date <= endStr && !tx.isScheduled)
+    .reduce((sum, tx) => sum + tx.amount, 0);
+
   const fixedCommitmentsTotal = profile.fixedExpenses.reduce((sum, item) => sum + item.amount, 0);
   const inHandSalary = profile.monthlyInHandSalary;
   const additionalIncome = profile.additionalIncome;
-  const totalIncome = inHandSalary + additionalIncome;
+  const totalIncome = inHandSalary + additionalIncome + cycleIncomeTxs;
   const savingsAllocation = profile.monthlySavingsTarget;
 
   // Formula: Available spending budget = In-hand salary + additional income - fixed expenses - savings allocation

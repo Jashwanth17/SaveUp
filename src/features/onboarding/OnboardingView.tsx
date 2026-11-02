@@ -1,10 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Globe, Coins, Calendar, DollarSign, ArrowRight, CheckCircle2, Clock, ChevronDown, Check, Briefcase } from 'lucide-react';
+import { Globe, Coins, Calendar, DollarSign, ArrowRight, CheckCircle2, Clock, ChevronDown, ChevronUp, Check, Briefcase, X } from 'lucide-react';
 import { useFinance } from '../../hooks/useFinance';
 import { getLastWorkingDayOfMonth } from '../../services/calculationEngine';
 
 interface OnboardingViewProps {
   onComplete: () => void;
+  onClose?: () => void;
+  isEditing?: boolean;
 }
 
 const COUNTRIES = [
@@ -39,7 +41,11 @@ const WEEKDAYS = [
   { id: 7, name: 'Sunday', short: 'Sun' },
 ];
 
-export const OnboardingView: React.FC<OnboardingViewProps> = ({ onComplete }) => {
+export const OnboardingView: React.FC<OnboardingViewProps> = ({ 
+  onComplete,
+  onClose,
+  isEditing = false
+}) => {
   const { profile, updateProfile } = useFinance();
 
   // Country & Currency
@@ -168,43 +174,61 @@ export const OnboardingView: React.FC<OnboardingViewProps> = ({ onComplete }) =>
   const selectedCurrency = CURRENCIES.find(c => c.code === currency) || CURRENCIES[0];
 
   return (
-    <div className="fixed inset-0 h-[100dvh] max-h-[100dvh] w-full bg-[#050507] text-zinc-100 flex flex-col justify-between selection:bg-[#caa052]/30 selection:text-[#fce8bd] overflow-hidden select-none">
+    <div className={isEditing ? "contents" : "fixed inset-0 h-[100dvh] max-h-[100dvh] w-full bg-[#050507] text-zinc-100 flex flex-col justify-between selection:bg-[#caa052]/30 selection:text-[#fce8bd] overflow-hidden select-none"}>
       
       {/* Background ambient gold lighting */}
-      <div 
-        className="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 w-[800px] h-[450px] opacity-35 blur-[140px] rounded-full"
-        style={{
-          background: 'radial-gradient(circle, rgba(202, 160, 82, 0.45) 0%, rgba(170, 119, 34, 0.15) 50%, transparent 70%)'
-        }}
-      />
+      {!isEditing && (
+        <div 
+          className="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 w-[800px] h-[450px] opacity-35 blur-[140px] rounded-full"
+          style={{
+            background: 'radial-gradient(circle, rgba(202, 160, 82, 0.45) 0%, rgba(170, 119, 34, 0.15) 50%, transparent 70%)'
+          }}
+        />
+      )}
 
       {/* Header */}
-      <header className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-2 flex items-center justify-between relative z-20 flex-shrink-0">
-        <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-full border border-[#caa052]/40 bg-gradient-to-br from-[#1c170e] to-[#0a0804] flex items-center justify-center relative shadow-sm shadow-[#caa052]/20">
-            <span className="font-serif font-black text-sm text-[#ecd095]">S</span>
+      {!isEditing && (
+        <header className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-2 flex items-center justify-between relative z-20 flex-shrink-0">
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-full border border-[#caa052]/40 bg-gradient-to-br from-[#1c170e] to-[#0a0804] flex items-center justify-center relative shadow-sm shadow-[#caa052]/20">
+              <span className="font-serif font-black text-sm text-[#ecd095]">S</span>
+            </div>
+            <div>
+              <div className="text-lg font-extrabold text-white tracking-tight leading-none">SaveUp</div>
+              <p className="text-[9px] font-bold text-zinc-500 tracking-widest uppercase mt-0.5">Smart Salary Ledger</p>
+            </div>
           </div>
-          <div>
-            <div className="text-lg font-extrabold text-white tracking-tight leading-none">SaveUp</div>
-            <p className="text-[9px] font-bold text-zinc-500 tracking-widest uppercase mt-0.5">Smart Salary Ledger</p>
-          </div>
-        </div>
-      </header>
+        </header>
+      )}
 
       {/* Main Big Box Container */}
-      <main className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-1 relative z-20 min-h-0 w-full">
-        <div className="w-full max-w-5xl bg-[#0b0c13]/95 border border-[#caa052]/35 rounded-3xl shadow-2xl shadow-black p-5 sm:p-7 flex flex-col max-h-[calc(100dvh-125px)] backdrop-blur-xl">
+      <main className={isEditing ? "w-full" : "flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-1 relative z-20 min-h-0 w-full"}>
+        <div className={`w-full max-w-5xl bg-[#0b0c13] border border-[#caa052]/35 rounded-3xl shadow-2xl shadow-black p-5 sm:p-7 flex flex-col ${isEditing ? 'max-h-[85vh]' : 'max-h-[calc(100dvh-125px)]'} backdrop-blur-xl`}>
           
           {/* Box Header */}
-          <div className="pb-3 border-b border-white/[0.08] flex-shrink-0 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <div className="pb-3 border-b border-white/[0.08] flex-shrink-0 flex items-center justify-between gap-3">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-                Set Up Your Financial Profile
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-black text-white tracking-tight">
+                {isEditing ? 'Change Salary & Pay Cycle' : 'Set Up Your Financial Profile'}
               </h1>
               <p className="text-xs sm:text-sm text-zinc-400 mt-0.5">
-                Welcome, <span className="text-[#ecd095] font-bold">@{profile.userName || 'Member'}</span>. Configure your earnings to calculate your daily spend runway.
+                {isEditing 
+                  ? 'Update your in-hand salary, pay frequency, or credit date. All calculations update live.'
+                  : <>Welcome, <span className="text-[#ecd095] font-bold">@{profile.userName || 'Member'}</span>. Configure your earnings to calculate your daily spend runway.</>
+                }
               </p>
             </div>
+
+            {onClose && (
+              <button
+                type="button"
+                onClick={onClose}
+                className="p-2 text-zinc-400 hover:text-white rounded-xl bg-white/[0.04] border border-white/[0.08] hover:bg-white/[0.1] transition cursor-pointer shrink-0"
+                title="Close"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            )}
           </div>
 
           {/* Form with Scrollable Inner Box */}
@@ -398,10 +422,58 @@ export const OnboardingView: React.FC<OnboardingViewProps> = ({ onComplete }) =>
                           setSalary(e.target.value);
                           if (salaryError) setSalaryError('');
                         }}
-                        className={`w-full pl-9 pr-4 py-2.5 sm:py-3 bg-[#07080e] border rounded-xl text-white placeholder:text-zinc-600 focus:outline-none transition text-sm sm:text-base font-semibold ${
+                        className={`w-full pl-9 pr-12 py-2.5 sm:py-3 bg-[#07080e] border rounded-xl text-white placeholder:text-zinc-600 focus:outline-none transition text-sm sm:text-base font-semibold no-spinner ${
                           salaryError ? 'border-rose-500' : 'border-white/[0.1] focus:border-[#caa052]'
                         }`}
                       />
+
+                      {/* Theme-Related Up & Down Stepper Controls */}
+                      <div className="absolute right-1.5 top-1/2 -translate-y-1/2 flex flex-col items-center border border-white/[0.12] rounded-lg bg-[#0e101b] overflow-hidden shadow-sm">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const step = frequency === 'daily' ? 100 : frequency === 'weekly' ? 500 : 1000;
+                            const current = parseFloat(salary) || 0;
+                            setSalary(String(current + step));
+                            if (salaryError) setSalaryError('');
+                          }}
+                          className="px-1.5 py-0.5 hover:bg-[#caa052]/25 text-zinc-400 hover:text-[#ecd095] transition cursor-pointer"
+                          title="Increase amount"
+                        >
+                          <ChevronUp className="w-3.5 h-3.5 stroke-[2.5]" />
+                        </button>
+                        <div className="w-full h-px bg-white/[0.1]" />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const step = frequency === 'daily' ? 100 : frequency === 'weekly' ? 500 : 1000;
+                            const current = parseFloat(salary) || 0;
+                            setSalary(String(Math.max(0, current - step)));
+                            if (salaryError) setSalaryError('');
+                          }}
+                          className="px-1.5 py-0.5 hover:bg-[#caa052]/25 text-zinc-400 hover:text-[#ecd095] transition cursor-pointer"
+                          title="Decrease amount"
+                        >
+                          <ChevronDown className="w-3.5 h-3.5 stroke-[2.5]" />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Quick Preset Amount Chips */}
+                    <div className="flex flex-wrap gap-1.5 mt-2">
+                      {(frequency === 'daily' ? [500, 1000, 2000] : frequency === 'weekly' ? [5000, 10000, 15000] : [20000, 30000, 50000, 100000]).map(val => (
+                        <button
+                          key={val}
+                          type="button"
+                          onClick={() => {
+                            setSalary(String(val));
+                            if (salaryError) setSalaryError('');
+                          }}
+                          className="px-2 py-0.5 rounded-lg bg-white/[0.04] hover:bg-[#caa052]/20 border border-white/[0.06] hover:border-[#caa052]/40 text-[10px] font-bold text-zinc-300 hover:text-[#ecd095] transition"
+                        >
+                          +{currencySymbol}{val.toLocaleString('en-IN')}
+                        </button>
+                      ))}
                     </div>
                     {salaryError && <p className="text-xs text-rose-400 mt-1">{salaryError}</p>}
                   </div>
@@ -423,8 +495,35 @@ export const OnboardingView: React.FC<OnboardingViewProps> = ({ onComplete }) =>
                         placeholder="e.g. 1200000"
                         value={ctc}
                         onChange={e => setCtc(e.target.value)}
-                        className="w-full pl-9 pr-4 py-2.5 sm:py-3 bg-[#07080e] border border-white/[0.1] focus:border-[#caa052] rounded-xl text-white placeholder:text-zinc-600 focus:outline-none transition text-sm"
+                        className="w-full pl-9 pr-12 py-2.5 sm:py-3 bg-[#07080e] border border-white/[0.1] focus:border-[#caa052] rounded-xl text-white placeholder:text-zinc-600 focus:outline-none transition text-sm no-spinner"
                       />
+
+                      {/* Theme-Related Up & Down Stepper Controls for CTC */}
+                      <div className="absolute right-1.5 top-1/2 -translate-y-1/2 flex flex-col items-center border border-white/[0.12] rounded-lg bg-[#0e101b] overflow-hidden shadow-sm">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const current = parseFloat(ctc) || 0;
+                            setCtc(String(current + 50000));
+                          }}
+                          className="px-1.5 py-0.5 hover:bg-[#caa052]/25 text-zinc-400 hover:text-[#ecd095] transition cursor-pointer"
+                          title="Increase CTC"
+                        >
+                          <ChevronUp className="w-3.5 h-3.5 stroke-[2.5]" />
+                        </button>
+                        <div className="w-full h-px bg-white/[0.1]" />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const current = parseFloat(ctc) || 0;
+                            setCtc(String(Math.max(0, current - 50000)));
+                          }}
+                          className="px-1.5 py-0.5 hover:bg-[#caa052]/25 text-zinc-400 hover:text-[#ecd095] transition cursor-pointer"
+                          title="Decrease CTC"
+                        >
+                          <ChevronDown className="w-3.5 h-3.5 stroke-[2.5]" />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -665,12 +764,22 @@ export const OnboardingView: React.FC<OnboardingViewProps> = ({ onComplete }) =>
             </div>
 
             {/* Fixed Action Footer at bottom of Big Box */}
-            <div className="pt-3 mt-2 border-t border-white/[0.08] flex-shrink-0">
+            <div className="pt-3 mt-2 border-t border-white/[0.08] flex-shrink-0 flex items-center gap-3">
+              {onClose && (
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="px-5 py-3 sm:py-3.5 rounded-full bg-white/[0.06] hover:bg-white/[0.12] border border-white/[0.1] text-xs sm:text-sm font-bold text-zinc-300 transition cursor-pointer"
+                >
+                  Cancel
+                </button>
+              )}
+
               <button
                 type="submit"
-                className="gold-pill-btn w-full py-3 sm:py-3.5 text-sm sm:text-base font-bold flex items-center justify-center gap-2.5 cursor-pointer shadow-xl shadow-[#caa052]/20 hover:scale-[1.005] transition"
+                className="gold-pill-btn flex-1 py-3 sm:py-3.5 text-sm sm:text-base font-bold flex items-center justify-center gap-2.5 cursor-pointer shadow-xl shadow-[#caa052]/20 hover:scale-[1.005] transition"
               >
-                <span>Save & Launch Dashboard</span>
+                <span>{isEditing ? 'Save Salary Changes' : 'Save & Launch Dashboard'}</span>
                 <ArrowRight className="w-4 h-4 stroke-[2.5]" />
               </button>
             </div>
@@ -681,9 +790,11 @@ export const OnboardingView: React.FC<OnboardingViewProps> = ({ onComplete }) =>
       </main>
 
       {/* Footer without awkward line collision */}
-      <footer className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-2 pb-3 text-center text-xs text-zinc-500 relative z-20 flex-shrink-0">
-        © SaveUp • Smart Personal Finance Ledger. All rights reserved.
-      </footer>
+      {!isEditing && (
+        <footer className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-2 pb-3 text-center text-xs text-zinc-500 relative z-20 flex-shrink-0">
+          © SaveUp • Smart Personal Finance Ledger. All rights reserved.
+        </footer>
+      )}
 
     </div>
   );

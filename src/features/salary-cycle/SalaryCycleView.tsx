@@ -39,7 +39,8 @@ export const SalaryCycleView: React.FC<SalaryCycleViewProps> = ({ onOpenSetup })
     setSandboxCycleDay(profile.salaryCreditDate);
   };
 
-  const actualBalance = calculations.totalIncome - calculations.actualSpentThisCycle;
+  const paidFixedBills = (profile.fixedExpenses || []).filter(f => f.isPaid).reduce((sum, f) => sum + f.amount, 0);
+  const actualBalance = calculations.totalIncome - calculations.actualSpentThisCycle - paidFixedBills;
   const plannedBalance = actualBalance - calculations.upcomingScheduledBills - calculations.savingsAllocation;
   const projectedBalance = Math.max(0, plannedBalance);
 

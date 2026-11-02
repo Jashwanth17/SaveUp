@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FinanceProvider } from './context/FinanceContext';
-import { ActiveTab } from './components/navigation/Sidebar';
-import { Navbar } from './components/navigation/Navbar';
+import { Sidebar, ActiveTab } from './components/navigation/Sidebar';
+import { Header } from './components/navigation/Header';
 import { DashboardView } from './features/dashboard/DashboardView';
 import { CalendarView } from './features/calendar/CalendarView';
 import { ExpensesView } from './features/expenses/ExpensesView';
@@ -27,6 +27,7 @@ const MainApp: React.FC = () => {
   const [currentScreen, setCurrentScreen] = useState<AppScreen>('welcome');
   const [loginUsernamePrefill, setLoginUsernamePrefill] = useState('');
   const [activeTab, setActiveTab] = useState<ActiveTab>('dashboard');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [addTxModalOpen, setAddTxModalOpen] = useState(false);
   const [setupModalOpen, setSetupModalOpen] = useState(false);
   const [prefilledDate, setPrefilledDate] = useState<string | undefined>(undefined);
@@ -106,7 +107,7 @@ const MainApp: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#050507] text-zinc-100 flex flex-col antialiased selection:bg-[#caa052]/30 selection:text-[#fce8bd] relative">
+    <div className="min-h-screen bg-[#050507] text-zinc-100 flex flex-col lg:flex-row antialiased selection:bg-[#caa052]/30 selection:text-[#fce8bd] relative">
       {/* Subtle Warm Gold Ambient Glow at Top */}
       <div
         className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-72 opacity-40 blur-3xl"
@@ -115,17 +116,28 @@ const MainApp: React.FC = () => {
         }}
       />
 
-      {/* Floating Dark Pill Header (Playerhub Style) */}
-      <Navbar
+      {/* Left Sidebar */}
+      <Sidebar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         onOpenSetup={() => setSetupModalOpen(true)}
-        onOpenAddTx={handleOpenAddTxStandard}
         onSignOut={() => setCurrentScreen('welcome')}
+        mobileOpen={mobileMenuOpen}
+        setMobileOpen={setMobileMenuOpen}
       />
 
-      {/* Main Content View Container */}
-      <main className="flex-1 px-4 sm:px-6 lg:px-8 py-6 max-w-7xl w-full mx-auto relative z-10">
+      {/* Main Content Column */}
+      <div className="flex-1 min-w-0 flex flex-col min-h-screen lg:h-screen lg:overflow-hidden relative z-10">
+        {/* Top Header with Profile Icon, Username, Notifications & Sign Out */}
+        <Header
+          activeTab={activeTab}
+          onOpenSetup={() => setSetupModalOpen(true)}
+          onSignOut={() => setCurrentScreen('welcome')}
+          onOpenMobileMenu={() => setMobileMenuOpen(true)}
+        />
+
+        {/* Scrollable Main Content View Container */}
+        <main className="flex-1 min-w-0 px-4 sm:px-6 lg:px-8 py-6 max-w-7xl w-full mx-auto lg:overflow-y-auto">
         {activeTab === 'dashboard' && (
           <DashboardView
             setActiveTab={setActiveTab}
@@ -172,6 +184,7 @@ const MainApp: React.FC = () => {
           <HealthInsightsView />
         )}
       </main>
+      </div>
 
       {/* Global Modals */}
       <AddTransactionModal
